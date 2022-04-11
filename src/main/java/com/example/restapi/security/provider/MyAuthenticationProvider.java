@@ -8,6 +8,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.parameters.P;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +18,6 @@ import org.springframework.stereotype.Component;
 public class MyAuthenticationProvider implements AuthenticationProvider {
 
   private final MyUserDetailService myUserDetailService;
-  private final PasswordEncoder passwordEncoder;
 
   @Override
   public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -30,6 +31,7 @@ public class MyAuthenticationProvider implements AuthenticationProvider {
 
     // 인증 하기 !!!! 예를들어... 패스워드 검증이라던지, 등등
     // 역시 나는 기록용이니 대충 패스워드 검증하는척
+    PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     if (!passwordEncoder.matches(password, myUserDetail.getPassword())) {
       // throw도 일단 내맘대로..
       throw new BadCredentialsException("PWD_NOT_MATCHED");
