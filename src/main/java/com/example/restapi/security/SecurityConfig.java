@@ -39,10 +39,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Bean
   public MyAuthenticationFilter myAuthenticationFilter() throws Exception {
-//    TokenBasedRememberMeServices rememberMeServices = new TokenBasedRememberMeServices(
-//        REMEMBER_ME_KEY, this.userDetailsService);
-//    rememberMeServices.setParameter("remember");
-//    rememberMeServices.setTokenValiditySeconds(Integer.MAX_VALUE);  // 젤루 길게 세팅
+    TokenBasedRememberMeServices rememberMeServices = new TokenBasedRememberMeServices(
+        REMEMBER_ME_KEY, this.userDetailsService);
+    rememberMeServices.setParameter("remember");
+    rememberMeServices.setTokenValiditySeconds(Integer.MAX_VALUE);  // 젤루 길게 세팅
 
     MyAuthenticationFilter filter = new MyAuthenticationFilter();
     filter.setFilterProcessesUrl("/my-login");
@@ -50,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //    filter.setAuthenticationSuccessHandler();  커스텀하게 필요하다면... 추가하기
 //    filter.setAuthenticationFailureHandler();  커스텀하게 필요하다면... 추가하기
 
-//    filter.setRememberMeServices(rememberMeServices);
+    filter.setRememberMeServices(rememberMeServices);
     return filter;
   }
 
@@ -61,10 +61,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http.csrf().disable()
-        .formLogin().disable();
-//        .rememberMe()
-//        .key(REMEMBER_ME_KEY)
-//        .userDetailsService(this.userDetailsService);
+        .formLogin().disable()
+        .rememberMe()
+        .key(REMEMBER_ME_KEY)
+        .userDetailsService(this.userDetailsService);
 
     http.addFilterAt(myAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
