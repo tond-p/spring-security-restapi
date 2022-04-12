@@ -6,9 +6,12 @@ import lombok.Data;
 @Data
 public class SampleModel {
 
-  @Schema(description = "로그인 아이디", required = true)
+  @Schema(title = "로그인 아이디", required = true)
   private String username;
 
-  @Schema(description = "비밀번호", required = true)
+  @Schema(title = "비밀번호", required = true)
   private String password;
+
+  @Schema(title = "자동로그인여부", example = "true", required = true)
+  private String remember;
 }

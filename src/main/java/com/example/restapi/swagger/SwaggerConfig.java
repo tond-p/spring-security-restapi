@@ -24,8 +24,8 @@ public class SwaggerConfig {
   @Bean
   public Docket swaggerApi() {
     return new Docket(DocumentationType.OAS_30)
-        .consumes(getConsumeContentTypes())
-        .produces(getProduceContentTypes())
+//        .consumes(getConsumeContentTypes())
+//        .produces(getProduceContentTypes())
         .apiInfo(swaggerInfo()).select()
         .apis(RequestHandlerSelectors.basePackage("com.example.restapi.sample"))
         .paths(PathSelectors.any())

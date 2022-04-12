@@ -1,9 +1,10 @@
 package com.example.restapi.security;
 
 import com.example.restapi.security.filter.MyAuthenticationFilter;
+import com.example.restapi.security.filter.RememberMeCookieFilter;
+import com.example.restapi.security.handler.MyLoginSuccessHandler;
 import com.example.restapi.security.provider.MyAuthenticationProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -38,6 +39,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   }
 
   @Bean
+  public MyLoginSuccessHandler myLoginSuccessHandler() {
+    return new MyLoginSuccessHandler();
+  }
+
+  @Bean
   public MyAuthenticationFilter myAuthenticationFilter() throws Exception {
     TokenBasedRememberMeServices rememberMeServices = new TokenBasedRememberMeServices(
         REMEMBER_ME_KEY, this.userDetailsService);
@@ -47,7 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     MyAuthenticationFilter filter = new MyAuthenticationFilter();
     filter.setFilterProcessesUrl("/my-login");
     filter.setAuthenticationManager(authenticationManagerBean());
-//    filter.setAuthenticationSuccessHandler();  커스텀하게 필요하다면... 추가하기
+    filter.setAuthenticationSuccessHandler(myLoginSuccessHandler());
 //    filter.setAuthenticationFailureHandler();  커스텀하게 필요하다면... 추가하기
 
     filter.setRememberMeServices(rememberMeServices);
@@ -66,6 +72,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .key(REMEMBER_ME_KEY)
         .userDetailsService(this.userDetailsService);
 
+    http.addFilterBefore(new RememberMeCookieFilter(), UsernamePasswordAuthenticationFilter.class);
     http.addFilterAt(myAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
   }
