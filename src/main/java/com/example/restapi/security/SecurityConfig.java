@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -65,12 +66,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   }
 
   @Override
+  public void configure(WebSecurity webSecurity) {
+    webSecurity.ignoring()
+        .antMatchers("/swagger-ui/index.html", "/swagger-ui/**", "/api-docs/**",
+            "/swagger-resources/**", "/v2/**", "/v3/**");
+  }
+
+  @Override
   protected void configure(HttpSecurity http) throws Exception {
     http.csrf().disable()
         .formLogin().disable()
         .rememberMe()
         .key(REMEMBER_ME_KEY)
-        .userDetailsService(this.userDetailsService);
+        .userDetailsService(this.userDetailsService)
+        .and()
+        .authorizeRequests()
+        .anyRequest()
+        .authenticated();
 
     http.addFilterBefore(new RememberMeCookieFilter(), UsernamePasswordAuthenticationFilter.class);
     http.addFilterAt(myAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
